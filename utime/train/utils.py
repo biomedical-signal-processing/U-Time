@@ -2,10 +2,10 @@ import logging
 import numpy as np
 import tensorflow
 from typing import List
-from tensorflow_addons import optimizers as addon_optimizers
-from tensorflow_addons import activations as addon_activations
-from tensorflow_addons import losses as addon_losses
-from tensorflow_addons import metrics as addon_metrics
+# from tensorflow_addons import optimizers as addon_optimizers
+# from tensorflow_addons import activations as addon_activations
+# from tensorflow_addons import losses as addon_losses
+# from tensorflow_addons import metrics as addon_metrics
 from psg_utils.utils import ensure_list_or_tuple
 from utime.errors import NotSparseError
 from utime.evaluation import loss_functions as custom_loss_functions
@@ -138,7 +138,6 @@ def init_losses(loss_string_list, reduction, ignore_out_of_bounds_classes=False,
     """
     losses = _get_classes_or_funcs(loss_string_list,
                                    func_modules=[tensorflow.keras.losses,
-                                                 addon_losses,
                                                  custom_loss_functions])
     _assert_all_classes(losses, assert_subclass_of=tensorflow.keras.losses.Loss)
     return _init_losses_or_metrics(losses,
@@ -154,8 +153,7 @@ def init_metrics(metric_string_list, ignore_out_of_bounds_classes=False, **kwarg
     Please refer to the 'init_losses' docstring.
     """
     metrics = _get_classes_or_funcs(metric_string_list,
-                                    func_modules=[tensorflow.keras.metrics,
-                                                  addon_metrics])
+                                    func_modules=[tensorflow.keras.metrics])
     _assert_all_classes(metrics, assert_subclass_of=tensorflow.keras.metrics.Metric)
     return _init_losses_or_metrics(metrics,
                                    ignore_out_of_bounds_classes=ignore_out_of_bounds_classes,
@@ -170,7 +168,7 @@ def init_optimizer(optimizer_string, **kwargs):
     """
     optimizer = _get_classes_or_funcs(
         optimizer_string,
-        func_modules=[tensorflow.keras.optimizers, addon_optimizers]
+        func_modules=[tensorflow.keras.optimizers]
     )
     assert len(optimizer) == 1, f'Received unexpected number of optimizers ({len(optimizer)}, expected 1)'
     return optimizer[0](**kwargs)
@@ -183,7 +181,7 @@ def get_activation_function(activation_string):
     """
     activation = _get_classes_or_funcs(
         activation_string,
-        func_modules=[tensorflow.keras.activations, addon_activations]
+        func_modules=[tensorflow.keras.activations]
     )
     assert len(activation) == 1, f'Received unexpected number of activation functions ({len(activation)}, expected 1)'
     return activation[0]
