@@ -7,7 +7,7 @@ training the model given a set of parameters and (non-initialized) callbacks.
 
 import logging
 import tensorflow as tf
-from tensorflow.python.framework.errors_impl import ResourceExhaustedError, InternalError
+# from tensorflow.python.framework.errors_impl import ResourceExhaustedError, InternalError
 from utime.callbacks import init_callback_objects, remove_validation_callbacks
 from utime.callbacks import Validation, LearningCurve, MeanReduceLogArrays, PrintDividerLine, MemoryConsumption
 from psg_utils.utils import ensure_list_or_tuple
@@ -88,7 +88,7 @@ class Trainer(object):
             try:
                 self._fit(batch_size=batch_size, **fit_kwargs)
                 fitting = False
-            except (ResourceExhaustedError, InternalError):
+            except (tf.errors.ResourceExhaustedError, tf.errors.InternalError):
                 # Reduce batch size
                 batch_size -= 2
                 logger.error(f"[MEMORY ERROR] Reducing batch size by 2 (now {batch_size})")
